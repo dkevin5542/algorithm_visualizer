@@ -1,42 +1,105 @@
-import pygame
+from tkinter import *
+from tkinter import ttk
 import random
-import math
-pygame.init()
 
-class DrawInformation:
-	BLACK = 0, 0, 0
-	WHITE = 255, 255, 255
-	GREEN = 0, 255, 0
-	RED = 255, 0, 0
-	BACKGROUND_COLOR = WHITE
-
-	GRADIENTS = [
-		(128, 128, 128),
-		(160, 160, 160),
-		(192, 192, 192)
-	]
-
-	FONT = pygame.font.SysFont('comicsans', 20)
-	LARGE_FONT = pygame.font.SysFont('comicsans', 20)
-
-	SIDE_PAD = 100
-	TOP_PAD = 150
-
-	def __init__(self, width, height, lst):
-		self.width = width
-		self.height = height
-
-		self.window = pygame.display.set_mode((width, height))
-		pygame.display.set_caption("Sorting Algorithm Visualization")
-		self.set_list(lst)
-
-	def set_list(self, lst):
-		self.lst = lst
-		self.min = min(lst)
-		self.max = max(lst)
-
-		self.block_width = round((self.width - self.SIDE_PAD) / len(lst))
-		self.block_height = int((self.height - self.TOP_PAD) / (self.max_val - self.min_val))
-		self.start_x = self.SIDE_PAD // 2
+root = Tk()
+root.title("Sorting Algorithm Visulizer")
+root.geometry("900x600+200+80")
+root.config(bg = '#082A46')
 
 
+def drawData(data):
+	canvas_height = 450
+	canvas_width = 870
+	x_width = canvas_width / (len(data) + 1)
+	offset = 10
+	spacing_rect = 10
+
+	for i, height in enumerate(data):
+		x0 = i * x_width + offset + spacing_rect
+		y0 = canvas_height - height
+
+		x1 = (i + 1) * x_width
+		y1 = canvas_height
+
+		board.create_rectangle(x0, y0, x1, y1, fill = "#A90042")
+		board.create_text(x0 + 2, y0, anchor= SW, text = str(data[i]), font =("new_roman", 15, "italic bold"), 
+					 fill = "orange")
+         
+
+def Generate():
+	print("Selected Algorithm: " + selected_algorithm.get() )
+	data = [1,6,2,7,3,9,5,4,0,3]
+	drawData(data)
+
+
+
+selected_algorithm = StringVar()
+
+
+mainlabel = Label(root, text = "Algorithm: ", font = ("new roman", 16, "italic bold"), 
+                  bg = "#05897A", width = 10, fg = "black", relief = GROOVE, bd = 5)
+mainlabel.place(x = 0, y = 0)
+
+#menu for selecting which sorting algorithm
+main_menu = ttk.Combobox(root, width = 15, font = ("new roman", 19, "italic bold"), 
+                         textvariable = selected_algorithm, values = ["Bubble Sort", "Merge Sort", "Quick Sort"])
+main_menu.place(x = 145, y = 0)
+main_menu.current(0)
+
+
+random_gen = Button(root, text = "Generate", bg = "#2DAE9A", font = ("arial", 12, "italic bold"), 
+                    relief= SUNKEN, activebackground = "#05945B", activeforeground = "white", bd = 5, width = 10, command=Generate)
+random_gen.place(x = 750, y = 60)
+
+
+#sliding bar for selecting the sample size to sort
+size_label = Label(root, text = "Size: ", font = ("new roman", 12, "italic bold"), 
+                  bg = "#0E6DA5", width = 10, fg = "black", height = 2, relief = GROOVE, bd = 5)
+size_label.place(x = 0, y = 60)
+
+size_val = Scale(root, from_ = 0, to = 30, resolution = 1, orient = HORIZONTAL, font = ("arial", 14, "italic bold"),
+                 relief= GROOVE, bd = 2, width = 10)
+size_val.place(x = 120, y = 60)
+
+
+#sliding bar for selecting the min size
+min_label = Label(root, text = "Min Value: ", font = ("new roman", 12, "italic bold"), 
+                  bg = "#0E6DA5", width = 10, fg = "black", height = 2, relief = GROOVE, bd = 5)
+min_label.place(x = 250, y = 60)
+min_val = Scale(root, from_ = 0, to = 10, resolution= 1, orient= HORIZONTAL, font = ("arial", 14, "italic bold"),
+                 relief= GROOVE, bd = 2, width = 10)
+min_val.place(x = 370, y = 60)
+
+
+#sliding bar for selecting the max size
+max_label = Label(root, text = "Max Value: ", font = ("new roman", 12, "italic bold"), 
+                  bg = "#0E6DA5", width = 10, fg = "black", height = 2, relief = GROOVE, bd = 5)
+max_label.place(x = 500, y = 60)
+max_val = Scale(root, from_ = 0, to = 100, resolution= 1, orient= HORIZONTAL, font = ("arial", 14, "italic bold"),
+                 relief= GROOVE, bd = 2, width = 10)
+max_val.place(x = 620, y = 60)
+
+
+#the start button to begin the sorting visualizer
+start_button = Button(root, text = "Start", bg = "#C45B09", font = ("arial", 12, "italic bold"), 
+                    relief= SUNKEN, activebackground = "#05945B", activeforeground = "white", bd = 5, width = 10)
+start_button.place(x = 750, y = 0)
+
+
+speed_label = Label(root, text = "Speed: ", font = ("new roman", 12, "italic bold"), 
+                  bg = "#0E6DA5", width = 10, fg = "black", relief = GROOVE, bd = 5)
+speed_label.place(x = 400, y = 0)
+
+
+speed_scale = Scale(root, from_ = 0.0, to = 5.0, resolution= 1, orient= HORIZONTAL, font = ("arial", 14, "italic bold"),
+                 relief= GROOVE, bd = 2, width = 10)
+speed_scale.place(x = 520, y = 0)
+
+board = Canvas(root, width = 870, height = 450, bg = "black")
+board.place(x = 10, y = 130)
+
+
+
+
+root.mainloop()
