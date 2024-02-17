@@ -9,15 +9,17 @@ root.config(bg = '#082A46')
 
 
 def drawData(data):
+	board.delete("all")
 	canvas_height = 450
 	canvas_width = 870
 	x_width = canvas_width / (len(data) + 1)
 	offset = 10
 	spacing_rect = 10
+	normalized_data = [i / max(data) for i in data]
 
-	for i, height in enumerate(data):
+	for i, height in enumerate(normalized_data):
 		x0 = i * x_width + offset + spacing_rect
-		y0 = canvas_height - height
+		y0 = canvas_height - height * 400
 
 		x1 = (i + 1) * x_width
 		y1 = canvas_height
@@ -28,8 +30,39 @@ def drawData(data):
          
 
 def Generate():
-	print("Selected Algorithm: " + selected_algorithm.get() )
-	data = [1,6,2,7,3,9,5,4,0,3]
+	print("Selected Algorithm: " + selected_algorithm.get())
+
+	try:
+		mini_value = int(min_val.get())
+	except:
+		mini_value = 1
+	
+	try:
+		max_value = int(max_val.get())
+	except:
+		max_value = 100
+
+	try:
+		size_value = int(size_val.get())
+	except:
+		size_value = 10
+
+	if mini_value < 0:
+		mini_value = 0
+	if max_value > 100:
+		max_value = 100
+	if size_value > 40 or size_value < 3:
+		size_value = 29
+
+	
+	if mini_value > max_value:
+		mini_value, max_value = max_value, mini_value
+
+	data = []
+	for _ in range(size_value):
+		data.append(random.randrange(mini_value, max_value + 1))
+
+
 	drawData(data)
 
 
