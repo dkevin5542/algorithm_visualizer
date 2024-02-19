@@ -1,14 +1,16 @@
 from tkinter import *
 from tkinter import ttk
 import random
+from bubblesort import bubble_sort
 
 root = Tk()
 root.title("Sorting Algorithm Visulizer")
 root.geometry("900x600+200+80")
 root.config(bg = '#082A46')
+data = []
 
 
-def drawData(data):
+def drawData(data, colorArr):
 	board.delete("all")
 	canvas_height = 450
 	canvas_width = 870
@@ -24,46 +26,32 @@ def drawData(data):
 		x1 = (i + 1) * x_width
 		y1 = canvas_height
 
-		board.create_rectangle(x0, y0, x1, y1, fill = "#A90042")
+		board.create_rectangle(x0, y0, x1, y1, fill = colorArr[i])
 		board.create_text(x0 + 2, y0, anchor= SW, text = str(data[i]), font =("new_roman", 15, "italic bold"), 
 					 fill = "orange")
-         
+
+	root.update_idletasks()
+def StartAlgorithm():
+	global data
+	bubble_sort(data,drawData, speed_scale.get())
+
 
 def Generate():
+	global data
 	print("Selected Algorithm: " + selected_algorithm.get())
 
-	try:
-		mini_value = int(min_val.get())
-	except:
-		mini_value = 1
+	mini_value = int(min_val.get())
 	
-	try:
-		max_value = int(max_val.get())
-	except:
-		max_value = 100
-
-	try:
-		size_value = int(size_val.get())
-	except:
-		size_value = 10
-
-	if mini_value < 0:
-		mini_value = 0
-	if max_value > 100:
-		max_value = 100
-	if size_value > 40 or size_value < 3:
-		size_value = 29
-
+	max_value = int(max_val.get())
 	
-	if mini_value > max_value:
-		mini_value, max_value = max_value, mini_value
+	size_value = int(size_val.get())
 
 	data = []
 	for _ in range(size_value):
 		data.append(random.randrange(mini_value, max_value + 1))
 
 
-	drawData(data)
+	drawData(data, ['#A90042' for x in range(len(data))])
 
 
 
@@ -116,7 +104,7 @@ max_val.place(x = 620, y = 60)
 
 #the start button to begin the sorting visualizer
 start_button = Button(root, text = "Start", bg = "#C45B09", font = ("arial", 12, "italic bold"), 
-                    relief= SUNKEN, activebackground = "#05945B", activeforeground = "white", bd = 5, width = 10)
+                    relief= SUNKEN, activebackground = "#05945B", activeforeground = "white", bd = 5, width = 10, command = StartAlgorithm)
 start_button.place(x = 750, y = 0)
 
 
@@ -125,7 +113,7 @@ speed_label = Label(root, text = "Speed: ", font = ("new roman", 12, "italic bol
 speed_label.place(x = 400, y = 0)
 
 
-speed_scale = Scale(root, from_ = 0.0, to = 5.0, resolution= 1, orient= HORIZONTAL, font = ("arial", 14, "italic bold"),
+speed_scale = Scale(root, from_ = 0.0, to = 5.0, resolution= 0.2, length = 200 , digits = 2, orient= HORIZONTAL, font = ("arial", 14, "italic bold"),
                  relief= GROOVE, bd = 2, width = 10)
 speed_scale.place(x = 520, y = 0)
 
